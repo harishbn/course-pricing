@@ -43,6 +43,8 @@ Default Tax percentage is configured at country level.
 At course level, tax percentage can be configured which will override 
 any country level configuration.
 
+Example: India - default tax is configured at 10%, and USA default tax is configured at 15%
+
 ## Course Price Definition
 
 A course price is always specified along with a currency. If a course is being sold in both USA and IND, 
@@ -54,11 +56,13 @@ Example:
     * INR 
         * Base Price: 2000
         * Other Fee: 100
+        * Tax(override): 8%
         * Net Price would be: INR 2100
     * USD
         * Base Price: 40 
         * Conversion Fee: 2
         * Other Fee: 1
+        * Tax (override): 20%
         * Net price would be: USD 43
 
 ## Running the App
@@ -79,6 +83,10 @@ GET 'http://localhost:8080/health'
 OpenAPI (Swagger) documentation can be found here:
 
 http://localhost:8080/swagger-ui.html
+
+## Unit Tests
+
+Refer to `CourseServiceImplTests.java` for tests with use cases for calculating course pricing.
 
 ## API Endpoints
 

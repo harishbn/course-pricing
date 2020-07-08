@@ -23,4 +23,7 @@ public class CoursePrice implements Serializable {
 
     @Column(name="price")
     private BigDecimal price;
+
+    @Column(name="is_percent")
+    private Boolean isPercent;
 }

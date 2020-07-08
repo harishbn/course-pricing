@@ -11,7 +11,7 @@ public enum Country {
     ),
     USA ("United Stats of America",
             CurrencyUom.USD,
-            new BigDecimal(10.0));
+            new BigDecimal(15.0));
 
     @Getter
     String name;

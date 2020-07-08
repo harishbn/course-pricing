@@ -15,6 +15,7 @@ import org.sample.course.services.ICourseService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,6 +62,12 @@ public class CourseServiceImpl implements ICourseService {
         return courseDto;
     }
 
+    /**
+     * Calculate the course net price based on country provided
+     * @param courseId
+     * @param country
+     * @return
+     */
     private BigDecimal calculateCourseNetPrice(Integer courseId, Country country) {
         BigDecimal courseNetPrice = BigDecimal.ZERO;
         List<CoursePrice> coursePrices =
@@ -97,14 +104,42 @@ public class CourseServiceImpl implements ICourseService {
         CoursePriceBreakupDto coursePriceBreakupDto = new CoursePriceBreakupDto();
 
         List<CoursePrice> coursePrices = coursePriceRepository.findByIdCourseCourseIdAndIdCurrencyUom(courseId, currencyUom);
-        Map<String, BigDecimal> priceComponents = new HashMap<>();
-        BigDecimal totalPrice = BigDecimal.ZERO;
-        if(coursePrices != null && coursePrices.size() > 0) {
-            for(CoursePrice coursePrice: coursePrices) {
-                priceComponents.put(coursePrice.getId().getPriceComponentType().toString(), coursePrice.getPrice());
-                totalPrice = totalPrice.add(coursePrice.getPrice());
+
+        if(coursePrices == null || coursePrices.size() == 0) {
+            return coursePriceBreakupDto;
+        }
+
+        BigDecimal basePrice = BigDecimal.ZERO;
+        for(CoursePrice coursePrice: coursePrices) {
+            if(coursePrice.getId().getPriceComponentType().equals(PriceComponentType.BASE_PRICE)) {
+                basePrice = coursePrice.getPrice();
+                break;
             }
         }
+
+        Map<String, BigDecimal> priceComponents = new HashMap<>();
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        for(CoursePrice coursePrice: coursePrices) {
+            BigDecimal componentPrice = coursePrice.getPrice();
+            if(coursePrice.getIsPercent()) {
+                // Calculate amount on percent of base-price
+                BigDecimal taxPerUnit = componentPrice.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+                componentPrice = basePrice.multiply(taxPerUnit);
+            }
+            priceComponents.put(coursePrice.getId().getPriceComponentType().toString(),
+                    componentPrice.setScale(2, RoundingMode.HALF_UP));
+            totalPrice = totalPrice.add(componentPrice.setScale(2, RoundingMode.HALF_UP));
+        }
+
+        // if tax not applied, use tax percent from country-level configuration
+        if(!priceComponents.containsKey(PriceComponentType.TAX.toString())) {
+            BigDecimal taxPerUnit = country.getDefaultTaxPercent()
+                    .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+            BigDecimal componentPrice = basePrice.multiply(taxPerUnit);
+            priceComponents.put(PriceComponentType.TAX.toString(), componentPrice.setScale(2, RoundingMode.HALF_UP));
+            totalPrice = totalPrice.add(componentPrice.setScale(2, RoundingMode.HALF_UP));
+        }
+
         coursePriceBreakupDto.setCourseNetPrice(totalPrice);
         coursePriceBreakupDto.setPriceBreakup(priceComponents);
         return coursePriceBreakupDto;
