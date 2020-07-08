@@ -18,20 +18,26 @@ The sample data contains 4 courses
     * Again pricing are in both INR and USD currencies
 
 
-## Assumptions
+## Assumptions 
 
-Countries supported are USA and IND. This is easily configurable to include more countries.
+**Countries** 
 
-Currency: currency is associated with Country. 
+The countries supported are USA and IND. This is easily configurable to include more countries.
 
+**Currency**: 
+
+Currency is associated with Country. 
 For example, user from USA will always purchase with USD currency, 
 and users from IND will purchase with INR.
 
 Country to Currency mapping is currently static and is configured in `CountryCurrencyMapper.java` and can easily be
 moved to external source such as Database/Configuration/External-Service.
 
-Taxes:
-## Course Pricing
+**Taxes**:
+
+TBD...
+
+## Course Price Definition
 
 A course price is always specified along with a currency. If a course is being sold in both USA and IND, 
 then price needs to be configured for both currencies.
@@ -49,21 +55,6 @@ Example:
         * Other Fee: 1
         * Total price would be: USD 43
 
-
-#### Use Case: 1) User from India 
-
-User from India trying to purchase above course, will be shown course fee as 2000 INR on course detail page.
-
-And during checkout the total purchase price will be INR 2100, with break up details (Base price: 2000, Other fee: 100)
-
-#### Use Case: 2) User from USA
-
-A user from USA trying to purchase same course, will be shown USD 40 as price in course detail page.
-
-During checkout, the total price to pay will be USD 43 with break up details (base price: 40, conversion fee: 2, other fee: 1)
-
-
-
 ## Running the App
 
 Configure the database (mysql) connection details in `application-local.yml` file.
@@ -74,7 +65,7 @@ Run the spring boot app with spring profile set to `local`
 mvnw spring-boot:run -Dspring-boot.run.profiles=local
 ~~~
 
-Ensure the service is up and running by invoke health-check endpoint:
+Ensure the service is up and running by invoking health-check endpoint:
 ~~~
 GET 'http://localhost:8080/health'
 ~~~
