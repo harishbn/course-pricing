@@ -6,14 +6,11 @@ import org.sample.course.model.enums.CoursePricingType;
 import org.sample.course.model.enums.CurrencyUom;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class CourseDto {
-    private Integer courseId;
-    private String name;
-    private CoursePricingType coursePricingType;
-
-    private CurrencyUom currencyUom;
-    private BigDecimal coursePrice = BigDecimal.ZERO;
+public class CoursePriceBreakupDto  {
+    private BigDecimal courseNetPrice = BigDecimal.ZERO;
+    private Map<String, BigDecimal> priceBreakup;
 }

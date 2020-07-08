@@ -2,13 +2,14 @@ package org.sample.course.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import org.sample.course.dto.CourseDto;
+import org.sample.course.dto.CoursePriceBreakupDto;
 import org.sample.course.dto.ResponseWrapper;
+import org.sample.course.mappers.CountryCurrencyMapper;
+import org.sample.course.model.enums.Country;
+import org.sample.course.model.enums.CurrencyUom;
 import org.sample.course.services.ICourseService;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,7 +31,23 @@ public class CourseController {
 
     @GetMapping(value = "/courses/{course_id}")
     @Operation(summary = "Get Course Detail")
-    public ResponseWrapper<CourseDto> getCourseDetail(@PathVariable("course_id") Integer courseId) throws Exception {
-        return new ResponseWrapper<>(courseService.getCourseDetail(courseId), "Course Detail");
+    public ResponseWrapper<CourseDto> getCourseDetail(@PathVariable("course_id") Integer courseId,
+                                                      @RequestParam(value = "country", defaultValue = "IND") String countryId) throws Exception {
+        //TODO: Assumption that country is passed in as param (ideally its part of customer profile)
+        Country country = Country.IND;
+        if(countryId.equals(Country.USA.name())) country = Country.USA;
+
+        return new ResponseWrapper<>(courseService.getCourseDetail(courseId, country), "Course Detail");
+    }
+
+    @GetMapping(value = "/courses/{course_id}/prices")
+    @Operation(summary = "Get Course Price Detail")
+    public ResponseWrapper<CoursePriceBreakupDto> getCoursePriceDetail(@PathVariable("course_id") Integer courseId,
+                                                                       @RequestParam(value = "country", defaultValue = "IND") String countryId) throws Exception {
+        //TODO: Assumption that country is passed in as param (ideally its part of customer profile)
+        Country country = Country.IND;
+        if(countryId.equals(Country.USA.name())) country = Country.USA;
+
+        return new ResponseWrapper<>(courseService.getCoursePriceDetail(courseId, country), "Course Pricing Breakup Details");
     }
 }

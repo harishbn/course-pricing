@@ -1,4 +1,4 @@
-package org.sample.course.model;
+package org.sample.course.model.enums;
 
 public enum CoursePricingType {
     FREE,
