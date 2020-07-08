@@ -24,18 +24,24 @@ The sample data contains 4 courses
 
 The countries supported are USA and IND. This is easily configurable to include more countries.
 
+For Each country, the global configuration are set, some are:
+
+* Currency uom
+* Default tax percentage
+
 **Currency**: 
 
 Currency is associated with Country. 
 For example, user from USA will always purchase with USD currency, 
-and users from IND will purchase with INR.
-
-Country to Currency mapping is currently static and is configured in `CountryCurrencyMapper.java` and can easily be
-moved to external source such as Database/Configuration/External-Service.
+and users from IND will purchase with INR. However, we can support multiple currency for a country
+with minimal changes. 
 
 **Taxes**:
 
-TBD...
+Default Tax percentage is configured at country level.
+
+At course level, tax percentage can be configured which will override 
+any country level configuration.
 
 ## Course Price Definition
 
@@ -44,16 +50,16 @@ then price needs to be configured for both currencies.
 
 Example:
 * Course: "Advanced Spring Boot"
-* Base Price: 
+* Price Definition: 
     * INR 
         * Base Price: 2000
         * Other Fee: 100
-        * Total Price would be: INR 2100
+        * Net Price would be: INR 2100
     * USD
         * Base Price: 40 
         * Conversion Fee: 2
         * Other Fee: 1
-        * Total price would be: USD 43
+        * Net price would be: USD 43
 
 ## Running the App
 
@@ -70,9 +76,13 @@ Ensure the service is up and running by invoking health-check endpoint:
 GET 'http://localhost:8080/health'
 ~~~
 
+OpenAPI (Swagger) documentation can be found here:
+
+http://localhost:8080/swagger-ui.html
+
 ## API Endpoints
 
-##### 1. Get Course Detail
+**1. Get Course Detail**
 
 Given a course id, this API will retrieve the course details along with course price (base-price).
 
@@ -115,7 +125,7 @@ And the response would be
 }
 ~~~
 
-##### 2. Course Pricing Breakup
+**2. Course Pricing Breakup**
 
 Now during checkout the complete break of the course price can be retrieved using the below API
 

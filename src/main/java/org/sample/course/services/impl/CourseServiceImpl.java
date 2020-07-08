@@ -2,7 +2,6 @@ package org.sample.course.services.impl;
 
 import org.sample.course.dto.CourseDto;
 import org.sample.course.dto.CoursePriceBreakupDto;
-import org.sample.course.mappers.CountryCurrencyMapper;
 import org.sample.course.mappers.CourseMapper;
 import org.sample.course.model.Course;
 import org.sample.course.model.CoursePrice;
@@ -28,13 +27,13 @@ public class CourseServiceImpl implements ICourseService {
     private final CourseRepository courseRepository;
     private final CoursePriceRepository coursePriceRepository;
     private final CourseMapper courseMapper;
-    private final CountryCurrencyMapper countryCurrencyMapper;
 
-    public CourseServiceImpl(CourseRepository courseRepository, CoursePriceRepository coursePriceRepository, CourseMapper courseMapper, CountryCurrencyMapper countryCurrencyMapper) {
+    public CourseServiceImpl(CourseRepository courseRepository,
+                             CoursePriceRepository coursePriceRepository,
+                             CourseMapper courseMapper) {
         this.courseRepository = courseRepository;
         this.coursePriceRepository = coursePriceRepository;
         this.courseMapper = courseMapper;
-        this.countryCurrencyMapper = countryCurrencyMapper;
     }
 
     @Override
@@ -50,25 +49,42 @@ public class CourseServiceImpl implements ICourseService {
             throw new Exception("Course not found");
         }
         Course course = courseOptional.get();
-        CurrencyUom currencyUom = countryCurrencyMapper.getCountryCurrency(country);
 
+        CurrencyUom currencyUom = country.getCurrencyUom();
         CourseDto courseDto = courseMapper.modelToDto(course);
         courseDto.setCurrencyUom(currencyUom);
 
         if(course.getCoursePricingType().equals(CoursePricingType.FREE)) {
             return courseDto;
         }
-
-        List<CoursePrice> coursePrices =
-                coursePriceRepository.findByIdCourseCourseIdAndIdCurrencyUomAndIdPriceComponentType(courseId,
-                        currencyUom, PriceComponentType.BASE_PRICE);
-        if(coursePrices!=null && coursePrices.size()>0) {
-            CoursePrice coursePrice = coursePrices.get(0);
-            BigDecimal basePrice = coursePrice.getPrice();
-            courseDto.setCoursePrice(basePrice);
-        }
-
+        courseDto.setCoursePrice(calculateCourseNetPrice(courseId, country) );
         return courseDto;
+    }
+
+    private BigDecimal calculateCourseNetPrice(Integer courseId, Country country) {
+        BigDecimal courseNetPrice = BigDecimal.ZERO;
+        List<CoursePrice> coursePrices =
+                coursePriceRepository.findByIdCourseCourseIdAndIdCurrencyUom(courseId, country.getCurrencyUom());
+
+        if(coursePrices!=null && coursePrices.size()>0) {
+            if(country.equals(Country.IND)) {
+                // India - show whole price
+                BigDecimal totalPrice = BigDecimal.ZERO;
+                for(CoursePrice coursePrice: coursePrices) {
+                    totalPrice = totalPrice.add(coursePrice.getPrice());
+                }
+                courseNetPrice = totalPrice;
+            } else {
+                // Other Countries - show only base price
+                for(CoursePrice coursePrice: coursePrices) {
+                    if(coursePrice.getId().getPriceComponentType().equals(PriceComponentType.BASE_PRICE)) {
+                        courseNetPrice = coursePrice.getPrice();
+                        break;
+                    }
+                }
+            }
+        }
+        return courseNetPrice;
     }
 
     @Override
@@ -77,7 +93,7 @@ public class CourseServiceImpl implements ICourseService {
         if(!courseOptional.isPresent()) {
             throw new Exception("Course not found");
         }
-        CurrencyUom currencyUom = countryCurrencyMapper.getCountryCurrency(country);
+        CurrencyUom currencyUom = country.getCurrencyUom();
         CoursePriceBreakupDto coursePriceBreakupDto = new CoursePriceBreakupDto();
 
         List<CoursePrice> coursePrices = coursePriceRepository.findByIdCourseCourseIdAndIdCurrencyUom(courseId, currencyUom);

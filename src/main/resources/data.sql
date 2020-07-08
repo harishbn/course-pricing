@@ -10,6 +10,7 @@ INSERT INTO course_price (course_id, price_type, currency_uom, price) VALUES (20
 
 INSERT INTO course (course_id, name, course_pricing_type) VALUES (3000, 'Spring Boot Advanced', 'ONE_TIME_PURCHASE');
 INSERT INTO course_price (course_id, price_type, currency_uom, price) VALUES (3000, 'BASE_PRICE', 'INR', 2000);
+INSERT INTO course_price (course_id, price_type, currency_uom, price) VALUES (3000, 'OTHER_FEE', 'INR', 100);
 INSERT INTO course_price (course_id, price_type, currency_uom, price) VALUES (3000, 'BASE_PRICE', 'USD', 40);
 INSERT INTO course_price (course_id, price_type, currency_uom, price) VALUES (3000, 'CONVERSION_FEE', 'USD', 2);
 INSERT INTO course_price (course_id, price_type, currency_uom, price) VALUES (3000, 'OTHER_FEE', 'USD', 3);
