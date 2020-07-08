@@ -50,20 +50,18 @@ Example: India - default tax is configured at 10%, and USA default tax is config
 A course price is always specified along with a currency. If a course is being sold in both USA and IND, 
 then price needs to be configured for both currencies.
 
-Example:
+Example course data:
 * Course: "Advanced Spring Boot"
 * Price Definition: 
     * INR 
         * Base Price: 2000
         * Other Fee: 100
         * Tax(override): 8%
-        * Net Price would be: INR 2100
     * USD
         * Base Price: 40 
         * Conversion Fee: 2
         * Other Fee: 1
         * Tax (override): 20%
-        * Net price would be: USD 43
 
 ## Running the App
 
