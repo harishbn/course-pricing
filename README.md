@@ -101,14 +101,14 @@ GET http://localhost:8080/courses/3000'
 The API response would be as below:
 ~~~
 {
-    "now": "2020-07-08T10:36:19.030+0000",
+    "now": "2020-07-08T15:19:23.737+0000",
     "message": "Course Detail",
     "data": {
         "courseId": 3000,
         "name": "Spring Boot Advanced",
         "coursePricingType": "ONE_TIME_PURCHASE",
         "currencyUom": "INR",
-        "coursePrice": 2100.00
+        "coursePrice": 2260.00
     }
 }
 ~~~
@@ -121,7 +121,7 @@ GET 'http://localhost:8080/courses/3000?country=USA'
 And the response would be
 ~~~
 {
-    "now": "2020-07-08T03:34:45.360+0000",
+    "now": "2020-07-08T15:19:07.168+0000",
     "message": "Course Detail",
     "data": {
         "courseId": 3000,
@@ -143,13 +143,14 @@ GET 'http://localhost:8080/courses/3000/prices'
 Response:
 ~~~
 {
-    "now": "2020-07-08T10:36:46.122+0000",
+    "now": "2020-07-08T15:16:01.481+0000",
     "message": "Course Pricing Breakup Details",
     "data": {
-        "courseNetPrice": 2100.00,
+        "courseNetPrice": 2260.00,
         "priceBreakup": {
             "BASE_PRICE": 2000.00,
-            "OTHER_FEE": 100.00
+            "OTHER_FEE": 100.00,
+            "TAX": 160.00
         }
     }
 }
@@ -161,14 +162,15 @@ GET 'http://localhost:8080/courses/3000/prices?country=USA'
 Response:
 ~~~
 {
-    "now": "2020-07-08T10:37:03.096+0000",
+    "now": "2020-07-08T15:15:52.386+0000",
     "message": "Course Pricing Breakup Details",
     "data": {
-        "courseNetPrice": 45.00,
+        "courseNetPrice": 53.00,
         "priceBreakup": {
             "BASE_PRICE": 40.00,
             "OTHER_FEE": 3.00,
-            "CONVERSION_FEE": 2.00
+            "CONVERSION_FEE": 2.00,
+            "TAX": 8.00
         }
     }
 }

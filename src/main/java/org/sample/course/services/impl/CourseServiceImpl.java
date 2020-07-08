@@ -68,30 +68,15 @@ public class CourseServiceImpl implements ICourseService {
      * @param country
      * @return
      */
-    private BigDecimal calculateCourseNetPrice(Integer courseId, Country country) {
-        BigDecimal courseNetPrice = BigDecimal.ZERO;
-        List<CoursePrice> coursePrices =
-                coursePriceRepository.findByIdCourseCourseIdAndIdCurrencyUom(courseId, country.getCurrencyUom());
-
-        if(coursePrices!=null && coursePrices.size()>0) {
-            if(country.equals(Country.IND)) {
-                // India - show whole price
-                BigDecimal totalPrice = BigDecimal.ZERO;
-                for(CoursePrice coursePrice: coursePrices) {
-                    totalPrice = totalPrice.add(coursePrice.getPrice());
-                }
-                courseNetPrice = totalPrice;
-            } else {
-                // Other Countries - show only base price
-                for(CoursePrice coursePrice: coursePrices) {
-                    if(coursePrice.getId().getPriceComponentType().equals(PriceComponentType.BASE_PRICE)) {
-                        courseNetPrice = coursePrice.getPrice();
-                        break;
-                    }
-                }
-            }
+    private BigDecimal calculateCourseNetPrice(Integer courseId, Country country) throws Exception {
+        CoursePriceBreakupDto coursePriceBreakupDto = getCoursePriceDetail(courseId, country);
+        if(country.equals(Country.IND)) {
+            // India - show whole price
+            return coursePriceBreakupDto.getCourseNetPrice();
+        } else {
+            // Other Countries - show only base price
+            return coursePriceBreakupDto.getPriceBreakup().get(PriceComponentType.BASE_PRICE.toString());
         }
-        return courseNetPrice;
     }
 
     @Override
@@ -104,7 +89,6 @@ public class CourseServiceImpl implements ICourseService {
         CoursePriceBreakupDto coursePriceBreakupDto = new CoursePriceBreakupDto();
 
         List<CoursePrice> coursePrices = coursePriceRepository.findByIdCourseCourseIdAndIdCurrencyUom(courseId, currencyUom);
-
         if(coursePrices == null || coursePrices.size() == 0) {
             return coursePriceBreakupDto;
         }

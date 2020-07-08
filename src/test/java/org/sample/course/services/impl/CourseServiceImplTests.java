@@ -27,7 +27,7 @@ public class CourseServiceImplTests {
     public void shouldReturnCourseNetPriceForIndia() throws Exception {
         CourseDto courseDto = courseService.getCourseDetail(2000, Country.IND);
         assertNotNull(courseDto);
-        assertEquals(new BigDecimal(1000.00).doubleValue(),
+        assertEquals(new BigDecimal(1100.00).doubleValue(),
                 courseDto.getCoursePrice().doubleValue(), 2);
     }
 
