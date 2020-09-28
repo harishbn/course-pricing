@@ -6,6 +6,7 @@ import org.sample.course.dto.CoursePriceBreakupDto;
 import org.sample.course.dto.ResponseWrapper;
 import org.sample.course.model.enums.Country;
 import org.sample.course.services.ICourseService;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,7 @@ public class CourseController {
 
     @GetMapping(value = "/courses")
     @Operation(summary = "Get list of courses")
+    @Cacheable("Courses")
     public ResponseWrapper<List<CourseDto>> getCourses() {
         return new ResponseWrapper<>(courseService.getCourses(), "Courses List");
     }
