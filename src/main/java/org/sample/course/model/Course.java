@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.sample.course.model.enums.CoursePricingType;
+import org.springframework.cache.annotation.Cacheable;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,6 +14,7 @@ import java.io.Serializable;
 @Getter
 @Accessors(chain = true)
 @Table(name="course")
+@Cacheable("course")
 public class Course implements Serializable {
     private static final long serialVersionUID = 2783569129800004530L;
 

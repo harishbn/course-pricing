@@ -24,7 +24,6 @@ public class CourseController {
 
     @GetMapping(value = "/courses")
     @Operation(summary = "Get list of courses")
-    @Cacheable("Courses")
     public ResponseWrapper<List<CourseDto>> getCourses() {
         return new ResponseWrapper<>(courseService.getCourses(), "Courses List");
     }
