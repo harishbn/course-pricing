@@ -3,6 +3,7 @@ package org.sample.course.model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.sample.course.model.enums.PriceComponentType;
 import org.sample.course.model.id.PriceId;
 
@@ -11,6 +12,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Setter
 @Getter
 @Accessors(chain = true)

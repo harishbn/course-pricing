@@ -3,18 +3,19 @@ package org.sample.course.model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.sample.course.model.enums.CoursePricingType;
-import org.springframework.cache.annotation.Cacheable;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Setter
 @Getter
 @Accessors(chain = true)
 @Table(name="course")
-@Cacheable("course")
 public class Course implements Serializable {
     private static final long serialVersionUID = 2783569129800004530L;
 
